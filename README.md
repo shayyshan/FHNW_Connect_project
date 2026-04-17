@@ -1,8 +1,6 @@
 # FHNW_Connect_project
 FHNW - Internet Technology Project - Brugg 2
 
-# FHNWConnect
-
 ## Part 1: Analysis
 
 ### Scenario
