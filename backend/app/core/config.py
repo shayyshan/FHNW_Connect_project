@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "FHNW Connect API"
     VERSION: str = "0.1.0"
     API_PREFIX: str = "/api"
+    PORT: int = 8001
     
     # CORS
     CORS_ORIGINS: str = ""
