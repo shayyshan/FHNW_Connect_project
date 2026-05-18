@@ -1,4 +1,5 @@
 import uvicorn
+from app.api.routers import health, users, clubs, activities, announcements
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
@@ -12,7 +13,14 @@ def create_app() -> FastAPI:
         openapi_url=f"{settings.API_PREFIX}/openapi.json",
         docs_url="/docs",  # Swagger UI endpoint
     )
+# Register routers
+    app.include_router(health.router, prefix=settings.API_PREFIX, tags=["Health"])
+    app.include_router(users.router, prefix=settings.API_PREFIX, tags=["Users"])
+    app.include_router(clubs.router, prefix=settings.API_PREFIX, tags=["Clubs"])
+    app.include_router(activities.router, prefix=settings.API_PREFIX, tags=["Activities"])
+    app.include_router(announcements.router, prefix=settings.API_PREFIX, tags=["Announcements"])
 
+    return app
     # Allows front-ends from different domains to communicate with this backend
     # Basic CORS setup
     if settings.cors_origins_list:
