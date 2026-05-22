@@ -3,7 +3,7 @@ from app.api.routers import health, users, clubs, activities, announcements
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api.routers import health, users
+from app.core.init_db import init_db
 
 # Creates the main FastAPI application
 def create_app() -> FastAPI:
@@ -13,14 +13,7 @@ def create_app() -> FastAPI:
         openapi_url=f"{settings.API_PREFIX}/openapi.json",
         docs_url="/docs",  # Swagger UI endpoint
     )
-# Register routers
-    app.include_router(health.router, prefix=settings.API_PREFIX, tags=["Health"])
-    app.include_router(users.router, prefix=settings.API_PREFIX, tags=["Users"])
-    app.include_router(clubs.router, prefix=settings.API_PREFIX, tags=["Clubs"])
-    app.include_router(activities.router, prefix=settings.API_PREFIX, tags=["Activities"])
-    app.include_router(announcements.router, prefix=settings.API_PREFIX, tags=["Announcements"])
 
-    return app
     # Allows front-ends from different domains to communicate with this backend
     # Basic CORS setup
     if settings.cors_origins_list:
@@ -32,13 +25,18 @@ def create_app() -> FastAPI:
             allow_headers=["*"],
         )
 
-    # Adds our specific route endpoints to the main application
     # Register routers
     app.include_router(health.router, prefix=settings.API_PREFIX, tags=["Health"])
     app.include_router(users.router, prefix=settings.API_PREFIX, tags=["Users"])
+    app.include_router(clubs.router, prefix=settings.API_PREFIX, tags=["Clubs"])
+    app.include_router(activities.router, prefix=settings.API_PREFIX, tags=["Activities"])
+    app.include_router(announcements.router, prefix=settings.API_PREFIX, tags=["Announcements"])
 
-    from app.core.init_db import init_db
-    
+    # Root endpoint
+    @app.get("/")
+    def read_root():
+        return {"message": "FHNW Connect API is running"}
+
     # This code runs automatically when the server starts up
     @app.on_event("startup")
     def on_startup():
