@@ -1,18 +1,33 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from app.core.config import settings
 
-# Hardcoded SQLite configuration
-DATABASE_URL = "sqlite:///./fhnw_connect.db"
+# Read the database URL from environment variables
+DATABASE_URL = settings.DATABASE_URL
 
-# This is the main connection engine that talks to our SQLite database file
-# Create SQLite engine
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False}
-)
+# Ensure SQLAlchemy uses the psycopg3 driver when a generic PostgreSQL URL is provided
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+
+connect_args = {}
+if DATABASE_URL.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}
+
+if connect_args:
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args=connect_args,
+        future=True,
+    )
+else:
+    engine = create_engine(
+        DATABASE_URL,
+        future=True,
+    )
 
 # This creates a factory that gives us individual database sessions (like a separate conversation with the DB)
-# Session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # A helper function to give each web request its own database session

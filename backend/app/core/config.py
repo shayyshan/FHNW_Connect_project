@@ -5,10 +5,19 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "FHNW Connect API"
     VERSION: str = "0.1.0"
     API_PREFIX: str = "/api"
-    PORT: int = 8000
-    
+    PORT: int = 10000
+
+    # Database
+    DATABASE_URL: str = "postgresql+psycopg://postgres:postgres@localhost:5432/fhnw_connect"
+
     # CORS
     CORS_ORIGINS: str = ""
+
+    # Basic auth credentials for Render/deployment
+    BASIC_AUTH_USER: str = "myuser"
+    BASIC_AUTH_PASSWORD: str = "password"
+    BASIC_AUTH_ADMIN: str = "myadmin"
+    BASIC_AUTH_ADMIN_PASSWORD: str = "password"
 
     @property
     def cors_origins_list(self) -> List[str]:

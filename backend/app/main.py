@@ -1,5 +1,5 @@
 import uvicorn
-from app.api.routers import health, users, clubs, activities, announcements
+from app.api.routers import health, users, clubs, activities, announcements, auth
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
@@ -31,6 +31,7 @@ def create_app() -> FastAPI:
     app.include_router(clubs.router, prefix=settings.API_PREFIX, tags=["Clubs"])
     app.include_router(activities.router, prefix=settings.API_PREFIX, tags=["Activities"])
     app.include_router(announcements.router, prefix=settings.API_PREFIX, tags=["Announcements"])
+    app.include_router(auth.router, prefix=settings.API_PREFIX, tags=["Auth"])
 
     # Root endpoint
     @app.get("/")

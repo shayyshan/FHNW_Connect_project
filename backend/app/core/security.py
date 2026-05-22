@@ -1,17 +1,17 @@
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi import Depends, HTTPException, status
 import secrets
+from app.core.config import settings
 
 security = HTTPBasic()
 
-# In-memory users (like Spring InMemoryUserDetailsManager)
 users = {
-    "myuser": {
-        "password": "password",
+    settings.BASIC_AUTH_USER: {
+        "password": settings.BASIC_AUTH_PASSWORD,
         "role": "USER"
     },
-    "myadmin": {
-        "password": "password",
+    settings.BASIC_AUTH_ADMIN: {
+        "password": settings.BASIC_AUTH_ADMIN_PASSWORD,
         "role": "ADMIN"
     }
 }
