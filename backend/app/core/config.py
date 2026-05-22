@@ -9,6 +9,7 @@ class Settings(BaseSettings):
 
     # Database
     DATABASE_URL: str = "postgresql+psycopg://postgres:postgres@localhost:5432/fhnw_connect"
+    RECREATE_DB: bool = False
 
     # CORS
     CORS_ORIGINS: str = ""
@@ -19,8 +20,15 @@ class Settings(BaseSettings):
     BASIC_AUTH_ADMIN: str = "myadmin"
     BASIC_AUTH_ADMIN_PASSWORD: str = "password"
 
+    # JWT Security Configuration
+    SECRET_KEY: str = "replace-with-a-secure-random-key-for-jwt-signing"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440  # 24 hours, convenient for Budibase Cloud
+
     @property
     def cors_origins_list(self) -> List[str]:
+        if not self.CORS_ORIGINS:
+            return []
         if self.CORS_ORIGINS == "*":
             return ["*"]
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
@@ -28,3 +36,4 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
 settings = Settings()
+

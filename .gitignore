@@ -1,0 +1,28 @@
+# Virtual environments
+.venv/
+backend/venv/
+venv/
+env/
+
+# Python cache
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Local database
+**/*.db
+backend/fhnw_connect.db
+
+# Environment configuration
+.env
+backend/.env
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+changes_report.md

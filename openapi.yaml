@@ -1,0 +1,1224 @@
+openapi: 3.0.3
+info:
+  title: FHNW Connect REST API
+  version: 1.0.0
+  description: |
+    OpenAPI specification for FHNW Connect.
+
+    This API is derived from the uploaded README and ERD/domain model.
+    It covers the core business capabilities:
+    - browse and filter activities
+    - view activity details
+    - join and leave activities
+    - favorite clubs and activities
+    - manage community posts
+    - create club announcements
+    - inspect participation numbers
+
+    Notes:
+    - Authentication is modeled with JWT bearer tokens.
+    - Role/ownership checks (student vs. club manager/admin) are left to backend authorization logic.
+    - "Announcements" are modeled as community posts with category `announcement` and a `club_id`.
+servers:
+  - url: http://localhost:8000/api
+    description: Local development
+  - url: https://your-render-service.onrender.com/api
+    description: Example Render deployment
+tags:
+  - name: Auth
+  - name: Users
+  - name: Dashboard
+  - name: Activities
+  - name: Registrations
+  - name: Clubs
+  - name: Favorites
+  - name: Community Posts
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Log in a user
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Get current authenticated user
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /users/me/dashboard:
+    get:
+      tags: [Dashboard]
+      summary: Get personalized home dashboard data
+      description: Returns calendar activities, upcoming activities, favorite clubs, and favorite activities for the authenticated user.
+      operationId: getMyDashboard
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: date_from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: date_to
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Dashboard payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /activities:
+    get:
+      tags: [Activities]
+      summary: List activities
+      description: Supports searching and filtering by category, date, club, location, and favorited status.
+      operationId: listActivities
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - in: query
+          name: category
+          schema:
+            $ref: '#/components/schemas/ActivityCategory'
+        - in: query
+          name: club_id
+          schema:
+            type: integer
+        - in: query
+          name: location
+          schema:
+            type: string
+        - in: query
+          name: date_from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: date_to
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: only_favorites
+          schema:
+            type: boolean
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Paged list of activities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityListResponse'
+    post:
+      tags: [Activities]
+      summary: Create a new activity
+      operationId: createActivity
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityCreate'
+      responses:
+        '201':
+          description: Activity created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /activities/{activityId}:
+    get:
+      tags: [Activities]
+      summary: Get activity details
+      operationId: getActivityById
+      parameters:
+        - $ref: '#/components/parameters/ActivityId'
+      responses:
+        '200':
+          description: Activity detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Activities]
+      summary: Update an activity
+      operationId: updateActivity
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ActivityId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivityUpdate'
+      responses:
+        '200':
+          description: Activity updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Activities]
+      summary: Delete an activity
+      operationId: deleteActivity
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ActivityId'
+      responses:
+        '204':
+          description: Activity deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /activities/{activityId}/join:
+    post:
+      tags: [Registrations]
+      summary: Join an activity
+      description: Creates or updates the current user's registration for the target activity.
+      operationId: joinActivity
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ActivityId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinActivityRequest'
+      responses:
+        '200':
+          description: Registration stored
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registration'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: No free slots or registration conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /activities/{activityId}/leave:
+    post:
+      tags: [Registrations]
+      summary: Leave an activity
+      description: Marks the current user's registration as left/cancelled.
+      operationId: leaveActivity
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ActivityId'
+      responses:
+        '200':
+          description: Registration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registration'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /activities/{activityId}/registrations:
+    get:
+      tags: [Registrations]
+      summary: List registrations for an activity
+      description: Intended for club-side participation monitoring.
+      operationId: listActivityRegistrations
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ActivityId'
+        - in: query
+          name: status
+          schema:
+            $ref: '#/components/schemas/RegistrationStatus'
+      responses:
+        '200':
+          description: List of registrations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /activities/{activityId}/favorite:
+    put:
+      tags: [Favorites]
+      summary: Favorite an activity
+      operationId: favoriteActivity
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ActivityId'
+      responses:
+        '204':
+          description: Activity favorited
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Favorites]
+      summary: Remove activity from favorites
+      operationId: unfavoriteActivity
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ActivityId'
+      responses:
+        '204':
+          description: Favorite removed
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /clubs:
+    get:
+      tags: [Clubs]
+      summary: List clubs
+      description: Supports search and optional filtering to favorites only.
+      operationId: listClubs
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - in: query
+          name: only_favorites
+          schema:
+            type: boolean
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Paged list of clubs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubListResponse'
+    post:
+      tags: [Clubs]
+      summary: Create a club
+      operationId: createClub
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClubCreate'
+      responses:
+        '201':
+          description: Club created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /clubs/{clubId}:
+    get:
+      tags: [Clubs]
+      summary: Get club details
+      operationId: getClubById
+      parameters:
+        - $ref: '#/components/parameters/ClubId'
+      responses:
+        '200':
+          description: Club detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Clubs]
+      summary: Update a club
+      operationId: updateClub
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ClubId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClubUpdate'
+      responses:
+        '200':
+          description: Club updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClubDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Clubs]
+      summary: Delete a club
+      operationId: deleteClub
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ClubId'
+      responses:
+        '204':
+          description: Club deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /clubs/{clubId}/activities:
+    get:
+      tags: [Clubs, Activities]
+      summary: List activities belonging to a club
+      operationId: listClubActivities
+      parameters:
+        - $ref: '#/components/parameters/ClubId'
+        - in: query
+          name: date_from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: date_to
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Activities for the club
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityListResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /clubs/{clubId}/announcements:
+    get:
+      tags: [Clubs, Community Posts]
+      summary: List announcements for a club
+      operationId: listClubAnnouncements
+      parameters:
+        - $ref: '#/components/parameters/ClubId'
+      responses:
+        '200':
+          description: Club announcements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunityPostListResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /clubs/{clubId}/favorite:
+    put:
+      tags: [Favorites]
+      summary: Favorite a club
+      operationId: favoriteClub
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ClubId'
+      responses:
+        '204':
+          description: Club favorited
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Favorites]
+      summary: Remove club from favorites
+      operationId: unfavoriteClub
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ClubId'
+      responses:
+        '204':
+          description: Favorite removed
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /community-posts:
+    get:
+      tags: [Community Posts]
+      summary: List community posts
+      description: Supports category and keyword filtering. Announcements are community posts with category `announcement`.
+      operationId: listCommunityPosts
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - in: query
+          name: category
+          schema:
+            $ref: '#/components/schemas/PostCategory'
+        - in: query
+          name: club_id
+          schema:
+            type: integer
+        - in: query
+          name: author_id
+          schema:
+            type: integer
+        - in: query
+          name: keyword
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Paged list of community posts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunityPostListResponse'
+    post:
+      tags: [Community Posts]
+      summary: Create a community post
+      operationId: createCommunityPost
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommunityPostCreate'
+      responses:
+        '201':
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunityPost'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /community-posts/{postId}:
+    get:
+      tags: [Community Posts]
+      summary: Get community post details
+      operationId: getCommunityPostById
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      responses:
+        '200':
+          description: Post detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunityPost'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Community Posts]
+      summary: Update a community post
+      operationId: updateCommunityPost
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommunityPostUpdate'
+      responses:
+        '200':
+          description: Post updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunityPost'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Community Posts]
+      summary: Delete a community post
+      operationId: deleteCommunityPost
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+      responses:
+        '204':
+          description: Post deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    ActivityId:
+      in: path
+      name: activityId
+      required: true
+      schema:
+        type: integer
+    ClubId:
+      in: path
+      name: clubId
+      required: true
+      schema:
+        type: integer
+    PostId:
+      in: path
+      name: postId
+      required: true
+      schema:
+        type: integer
+    Search:
+      in: query
+      name: search
+      schema:
+        type: string
+      description: Free-text search term
+    Page:
+      in: query
+      name: page
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      in: query
+      name: page_size
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication required or invalid token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Authenticated but not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Resource conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    User:
+      type: object
+      required: [user_id, username, email]
+      properties:
+        user_id:
+          type: integer
+          example: 12
+        username:
+          type: string
+          maxLength: 50
+          example: shannon
+        email:
+          type: string
+          format: email
+          maxLength: 100
+          example: shannon@example.com
+
+    UserSummary:
+      type: object
+      required: [user_id, username]
+      properties:
+        user_id:
+          type: integer
+        username:
+          type: string
+          example: shannon
+
+    RegisterRequest:
+      type: object
+      required: [username, email, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        password:
+          type: string
+          minLength: 8
+          format: password
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    AuthResponse:
+      type: object
+      required: [access_token, token_type, user]
+      properties:
+        access_token:
+          type: string
+          example: eyJhbGciOi...
+        token_type:
+          type: string
+          example: Bearer
+        user:
+          $ref: '#/components/schemas/User'
+
+    ClubBase:
+      type: object
+      required: [club_name, club_description]
+      properties:
+        club_name:
+          type: string
+          maxLength: 100
+          example: FHNW Chess Club
+        club_description:
+          type: string
+          example: Weekly chess meetups and tournaments.
+        image_path:
+          type: string
+          maxLength: 255
+          nullable: true
+          example: /media/clubs/chess.png
+
+    ClubCreate:
+      allOf:
+        - $ref: '#/components/schemas/ClubBase'
+
+    ClubUpdate:
+      type: object
+      properties:
+        club_name:
+          type: string
+          maxLength: 100
+        club_description:
+          type: string
+        image_path:
+          type: string
+          maxLength: 255
+          nullable: true
+
+    ClubSummary:
+      allOf:
+        - type: object
+          required: [club_id]
+          properties:
+            club_id:
+              type: integer
+              example: 3
+        - $ref: '#/components/schemas/ClubBase'
+        - type: object
+          properties:
+            is_favorited:
+              type: boolean
+              example: true
+
+    ClubDetail:
+      allOf:
+        - $ref: '#/components/schemas/ClubSummary'
+        - type: object
+          properties:
+            upcoming_activities_count:
+              type: integer
+              example: 4
+
+    ActivityCategory:
+      type: string
+      description: Extend this enum as your project categories become final.
+      enum:
+        - sports
+        - club
+        - workshop
+        - social
+        - academic
+        - other
+
+    ActivityBase:
+      type: object
+      required:
+        - activity_title
+        - activity_description
+        - activity_date
+        - start_time
+        - end_time
+        - activity_location
+        - activity_category
+        - max_slots
+        - club_id
+      properties:
+        activity_title:
+          type: string
+          maxLength: 100
+          example: Volleyball Training
+        activity_description:
+          type: string
+          example: Weekly indoor training session for all skill levels.
+        activity_date:
+          type: string
+          format: date
+          example: '2026-05-14'
+        start_time:
+          type: string
+          format: time
+          example: '18:00:00'
+        end_time:
+          type: string
+          format: time
+          example: '20:00:00'
+        activity_location:
+          type: string
+          maxLength: 100
+          example: FHNW Gym Hall A
+        max_slots:
+          type: integer
+          minimum: 1
+          example: 24
+        activity_category:
+          $ref: '#/components/schemas/ActivityCategory'
+        image_path:
+          type: string
+          maxLength: 255
+          nullable: true
+          example: /media/activities/volleyball.png
+        club_id:
+          type: integer
+          example: 5
+
+    ActivityCreate:
+      allOf:
+        - $ref: '#/components/schemas/ActivityBase'
+
+    ActivityUpdate:
+      type: object
+      properties:
+        activity_title:
+          type: string
+          maxLength: 100
+        activity_description:
+          type: string
+        activity_date:
+          type: string
+          format: date
+        start_time:
+          type: string
+          format: time
+        end_time:
+          type: string
+          format: time
+        activity_location:
+          type: string
+          maxLength: 100
+        max_slots:
+          type: integer
+          minimum: 1
+        activity_category:
+          $ref: '#/components/schemas/ActivityCategory'
+        image_path:
+          type: string
+          maxLength: 255
+          nullable: true
+        club_id:
+          type: integer
+
+    ActivitySummary:
+      allOf:
+        - type: object
+          required: [activity_id]
+          properties:
+            activity_id:
+              type: integer
+              example: 11
+        - $ref: '#/components/schemas/ActivityBase'
+        - type: object
+          properties:
+            club:
+              $ref: '#/components/schemas/ClubSummary'
+            joined_count:
+              type: integer
+              example: 18
+            available_slots:
+              type: integer
+              example: 6
+            is_favorited:
+              type: boolean
+              example: false
+            my_registration_status:
+              $ref: '#/components/schemas/RegistrationStatus'
+
+    ActivityDetail:
+      allOf:
+        - $ref: '#/components/schemas/ActivitySummary'
+
+    RegistrationStatus:
+      type: string
+      enum: [joined, left, cancelled]
+      example: joined
+
+    Registration:
+      type: object
+      required:
+        - registration_id
+        - registration_status
+        - joined_at
+        - user_id
+        - activity_id
+      properties:
+        registration_id:
+          type: integer
+          example: 101
+        registration_status:
+          $ref: '#/components/schemas/RegistrationStatus'
+        joined_at:
+          type: string
+          format: date-time
+          example: '2026-05-10T17:22:00Z'
+        user_id:
+          type: integer
+          example: 12
+        activity_id:
+          type: integer
+          example: 11
+        user:
+          $ref: '#/components/schemas/UserSummary'
+
+    JoinActivityRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [joined]
+          default: joined
+
+    PostCategory:
+      type: string
+      description: Community forum categories; keep `announcement` for club updates.
+      enum:
+        - announcement
+        - general
+        - event
+        - question
+        - sports
+        - clubs
+        - other
+
+    CommunityPostBase:
+      type: object
+      required:
+        - community_post_title
+        - community_post_description
+        - community_post_category
+      properties:
+        community_post_title:
+          type: string
+          maxLength: 50
+          example: Training moved to Thursday
+        community_post_description:
+          type: string
+          example: Due to the holiday, this week's training will take place on Thursday.
+        community_post_category:
+          $ref: '#/components/schemas/PostCategory'
+        community_post_keywords:
+          type: array
+          items:
+            type: string
+          example: [training, update, volleyball]
+        club_id:
+          type: integer
+          nullable: true
+          example: 5
+
+    CommunityPostCreate:
+      allOf:
+        - $ref: '#/components/schemas/CommunityPostBase'
+
+    CommunityPostUpdate:
+      type: object
+      properties:
+        community_post_title:
+          type: string
+          maxLength: 50
+        community_post_description:
+          type: string
+        community_post_category:
+          $ref: '#/components/schemas/PostCategory'
+        community_post_keywords:
+          type: array
+          items:
+            type: string
+        club_id:
+          type: integer
+          nullable: true
+
+    CommunityPost:
+      allOf:
+        - type: object
+          required: [community_post_id, user_id]
+          properties:
+            community_post_id:
+              type: integer
+              example: 77
+            user_id:
+              type: integer
+              example: 12
+        - $ref: '#/components/schemas/CommunityPostBase'
+        - type: object
+          properties:
+            author:
+              $ref: '#/components/schemas/UserSummary'
+            club:
+              $ref: '#/components/schemas/ClubSummary'
+            created_at:
+              type: string
+              format: date-time
+              nullable: true
+              example: '2026-05-09T10:45:00Z'
+            updated_at:
+              type: string
+              format: date-time
+              nullable: true
+              example: '2026-05-09T12:15:00Z'
+
+    DashboardResponse:
+      type: object
+      required: [calendar_items, upcoming_activities, favorite_clubs, favorite_activities]
+      properties:
+        calendar_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivitySummary'
+        upcoming_activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivitySummary'
+        favorite_clubs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClubSummary'
+        favorite_activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivitySummary'
+
+    PaginationMeta:
+      type: object
+      required: [page, page_size, total_items, total_pages]
+      properties:
+        page:
+          type: integer
+          example: 1
+        page_size:
+          type: integer
+          example: 20
+        total_items:
+          type: integer
+          example: 58
+        total_pages:
+          type: integer
+          example: 3
+
+    ActivityListResponse:
+      type: object
+      required: [items, meta]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivitySummary'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    ClubListResponse:
+      type: object
+      required: [items, meta]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClubSummary'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    CommunityPostListResponse:
+      type: object
+      required: [items, meta]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommunityPost'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    RegistrationListResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Registration'
+
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          example: Resource not found
+        code:
+          type: string
+          example: not_found
+        details:
+          type: object
+          additionalProperties: true
+          nullable: true

@@ -6,3 +6,5 @@ pydantic
 pydantic-settings
 python-dotenv
 psycopg[binary]
+passlib[bcrypt]
+pyjwt
