@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Date, Time, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from app.models.base import Base
 from app.models.mixins import TimestampMixin
@@ -11,9 +11,8 @@ class Activity(Base, TimestampMixin):
     activity_id = Column(Integer, primary_key=True, index=True)
     activity_title = Column(String(100), nullable=False)
     activity_description = Column(Text, nullable=True)
-    activity_date = Column(Date, nullable=False)
-    start_time = Column(Time, nullable=False)
-    end_time = Column(Time, nullable=False)
+    start_date = Column(DateTime, nullable=False)
+    end_date = Column(DateTime, nullable=False)
     activity_location = Column(String(100), nullable=True)
     max_slots = Column(Integer, nullable=True)
     activity_category = Column(Text, nullable=True)

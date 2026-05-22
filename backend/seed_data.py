@@ -1,4 +1,4 @@
-from datetime import date, time
+from datetime import datetime
 import sys
 import os
 
@@ -74,9 +74,8 @@ def seed_data():
             Activity(
                 activity_title="FHNW Welcome BBQ",
                 activity_description="Meet new students, enjoy food and network with fellow FHNW students.",
-                activity_date=date(2025, 9, 20),
-                start_time=time(17, 0),
-                end_time=time(21, 0),
+                start_date=datetime(2025, 9, 20, 17, 0),
+                end_date=datetime(2025, 9, 20, 21, 0),
                 activity_location="Campus Olten Courtyard",
                 max_slots=120,
                 activity_category="Social",
@@ -86,9 +85,8 @@ def seed_data():
             Activity(
                 activity_title="Board Game Evening",
                 activity_description="Relax with board games, snacks and new friends.",
-                activity_date=date(2025, 9, 22),
-                start_time=time(19, 0),
-                end_time=time(23, 0),
+                start_date=datetime(2025, 9, 22, 19, 0),
+                end_date=datetime(2025, 9, 22, 23, 0),
                 activity_location="Campus Muttenz Cafeteria",
                 max_slots=35,
                 activity_category="Social",
@@ -98,9 +96,8 @@ def seed_data():
             Activity(
                 activity_title="AI & Gaming Workshop",
                 activity_description="Hands-on workshop exploring AI applications in modern video games.",
-                activity_date=date(2025, 10, 3),
-                start_time=time(14, 0),
-                end_time=time(18, 0),
+                start_date=datetime(2025, 10, 3, 14, 0),
+                end_date=datetime(2025, 10, 3, 18, 0),
                 activity_location="FHNW Brugg-Windisch Room B204",
                 max_slots=40,
                 activity_category="Technology",
@@ -110,9 +107,8 @@ def seed_data():
             Activity(
                 activity_title="Cybersecurity Capture The Flag",
                 activity_description="Solve hacking challenges and compete in teams.",
-                activity_date=date(2025, 10, 15),
-                start_time=time(13, 0),
-                end_time=time(19, 0),
+                start_date=datetime(2025, 10, 15, 13, 0),
+                end_date=datetime(2025, 10, 15, 19, 0),
                 activity_location="FHNW Computer Science Building",
                 max_slots=50,
                 activity_category="Technology",
@@ -122,9 +118,8 @@ def seed_data():
             Activity(
                 activity_title="FHNW Coding Night",
                 activity_description="Collaborative coding session with pizza and mini challenges.",
-                activity_date=date(2025, 10, 5),
-                start_time=time(18, 0),
-                end_time=time(23, 30),
+                start_date=datetime(2025, 10, 5, 18, 0),
+                end_date=datetime(2025, 10, 5, 23, 30),
                 activity_location="FHNW Innovation Lab",
                 max_slots=70,
                 activity_category="Technology",
@@ -134,9 +129,8 @@ def seed_data():
             Activity(
                 activity_title="ESN International Meetup",
                 activity_description="Exchange students and local students meet for games and networking.",
-                activity_date=date(2025, 9, 28),
-                start_time=time(18, 30),
-                end_time=time(22, 0),
+                start_date=datetime(2025, 9, 28, 18, 30),
+                end_date=datetime(2025, 9, 28, 22, 0),
                 activity_location="Olten Student Lounge",
                 max_slots=80,
                 activity_category="Networking",
@@ -146,9 +140,8 @@ def seed_data():
             Activity(
                 activity_title="Startup Pitch Night",
                 activity_description="Present your startup ideas and receive feedback from mentors.",
-                activity_date=date(2025, 10, 10),
-                start_time=time(16, 0),
-                end_time=time(20, 0),
+                start_date=datetime(2025, 10, 10, 16, 0),
+                end_date=datetime(2025, 10, 10, 20, 0),
                 activity_location="FHNW Basel Innovation Space",
                 max_slots=60,
                 activity_category="Business",
@@ -158,9 +151,8 @@ def seed_data():
             Activity(
                 activity_title="FHNW Football Tournament",
                 activity_description="Inter-club football tournament open for all skill levels.",
-                activity_date=date(2025, 9, 25),
-                start_time=time(10, 0),
-                end_time=time(17, 0),
+                start_date=datetime(2025, 9, 25, 10, 0),
+                end_date=datetime(2025, 9, 25, 17, 0),
                 activity_location="FHNW Sports Field",
                 max_slots=100,
                 activity_category="Sports",
@@ -170,9 +162,8 @@ def seed_data():
             Activity(
                 activity_title="Sustainability Week Workshop",
                 activity_description="Interactive workshop about sustainable innovation and green tech.",
-                activity_date=date(2025, 10, 8),
-                start_time=time(15, 0),
-                end_time=time(18, 0),
+                start_date=datetime(2025, 10, 8, 15, 0),
+                end_date=datetime(2025, 10, 8, 18, 0),
                 activity_location="Campus Basel",
                 max_slots=45,
                 activity_category="Education",
@@ -182,9 +173,8 @@ def seed_data():
             Activity(
                 activity_title="Photography Walk Basel",
                 activity_description="Explore Basel while improving your photography skills.",
-                activity_date=date(2025, 9, 30),
-                start_time=time(16, 0),
-                end_time=time(19, 0),
+                start_date=datetime(2025, 9, 30, 16, 0),
+                end_date=datetime(2025, 9, 30, 19, 0),
                 activity_location="Basel City Center",
                 max_slots=25,
                 activity_category="Creative",

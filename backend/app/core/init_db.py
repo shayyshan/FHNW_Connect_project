@@ -56,41 +56,38 @@ def init_db():
         
         # --- Activities ---
         # Creates example activities and links them to the clubs using club_id
-        # Date needs to be python datetime.date
-        d1 = datetime.date.today() + datetime.timedelta(days=7)
-        t1_start = datetime.time(10, 0)
-        t1_end = datetime.time(18, 0)
+        # Using datetime for both date and time
+        d1 = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=7), datetime.time(10, 0))
         
         a1 = Activity(
             activity_title="Hackathon 2026",
             activity_description="24 hour coding challenge to build amazing apps.",
-            activity_date=d1,
-            start_time=t1_start,
-            end_time=t1_end,
+            start_date=d1,
+            end_date=d1.replace(hour=18),
             activity_location="FHNW Campus Muttenz",
             max_slots=100,
             activity_category="Technology",
             club_id=c1.club_id
         )
         
+        d2 = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=8), datetime.time(10, 0))
         a2 = Activity(
             activity_title="Tennis Tournament",
             activity_description="Annual tennis championship. All levels welcome.",
-            activity_date=d1 + datetime.timedelta(days=1),
-            start_time=t1_start,
-            end_time=t1_end,
+            start_date=d2,
+            end_date=d2.replace(hour=18),
             activity_location="Sports Center",
             max_slots=32,
             activity_category="Sports",
             club_id=c2.club_id
         )
         
+        d3 = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=21), datetime.time(14, 0))
         a3 = Activity(
             activity_title="AI Workshop",
             activity_description="Learn about the latest trends in Generative AI.",
-            activity_date=d1 + datetime.timedelta(days=14),
-            start_time=datetime.time(14, 0),
-            end_time=datetime.time(16, 0),
+            start_date=d3,
+            end_date=d3.replace(hour=16),
             activity_location="Room 101",
             max_slots=50,
             activity_category="Technology",
