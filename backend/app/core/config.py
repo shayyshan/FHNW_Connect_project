@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     PORT: int = 10000
 
     # Database
-    DATABASE_URL: str = "postgresql+psycopg://postgres:postgres@localhost:5432/fhnw_connect"
+    DATABASE_URL: str = "postgresql://fhnw_connect_user:882xQ8h7V3Xf7i9NoiwRScj0OAN74mNP@dpg-d886cagg4nts73eqsu30-a.frankfurt-postgres.render.com/fhnw_connect"
 
     # CORS
     CORS_ORIGINS: str = ""
