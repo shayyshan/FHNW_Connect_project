@@ -431,69 +431,31 @@ Database credentials are managed through environment variables and are not inclu
 
 ---
 
-# Local Development Setup
-
-## Prerequisites
-
-- Python 3.11+
-- PostgreSQL
-- Git
-
-## Clone Repository
-
-```bash
-git clone https://github.com/shayyshan/FHNW_Connect_project.git
-cd FHNW_Connect_project
-```
-
-## Create Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-### Windows
-
-```bash
-venv\Scripts\activate
-```
-
-### Linux / macOS
-
-```bash
-source venv/bin/activate
-```
-
-## Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-## Run the Application
-
-```bash
-uvicorn app.main:app --reload
-```
-
-## API Documentation
-
-FastAPI automatically generates API documentation:
-
-```text
-http://localhost:8000/docs
-```
-
----
-
 # Authors
-
-### Shannon Polak
 
 FHNW Brugg – Internet Technology Project
 
+### Shannon Polak
+
 GitHub:
 https://github.com/shayyshan
+
+### Katrin Schütte
+
+GitHub:
+https://github.com/kittkatt2
+
+### Jorge Mera
+
+GitHub:
+https://github.com/georgeemera
+
+### Alondra Maria Diaz Navarro
+
+GitHub:
+https://github.com/alondra186
+
+
 
 ---
 
