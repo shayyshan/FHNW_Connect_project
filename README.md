@@ -1,151 +1,530 @@
-# FHNW_Connect_project
-FHNW - Internet Technology Project - Brugg 2
+# FHNW Connect
 
-## Part 1: Analysis
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![Budibase](https://img.shields.io/badge/Budibase-Low_Code-yellow)
+![Render](https://img.shields.io/badge/Render-Deployed-purple)
 
-### Scenario
-FHNWConnect is a university event platform that helps students discover what is happening on campus. It centralizes activities from student clubs and sports into one platform. 
+FHNW Connect is a campus engagement platform developed as part of the Internet Technology Project at FHNW Brugg.
 
-Students can browse upcoming activities, search and filter them, mark favorites, and join or leave activities. Clubs can organize activities, publish announcements, and monitor participation.
-
----
-
-### User Stories
-
-- As a Student, I want to browse all campus activities so that I can find interesting things to do.
-- As a Student, I want to search and filter activities by category, date, club, and location so that I can quickly find relevant activities.
-- As a Student, I want to favorite clubs and activities so that I get a more personalized experience.
-- As a Student, I want to join or leave activities so that I can manage my participation.
-- As a Club, I want to create activities so that students can join them.
-- As a Club, I want to post announcements so that I can inform students about updates or changes.
-- As a Club, I want to view participation numbers so that I can better plan my activities.
-- As a User, I want to access the platform via a web browser so that I can use it easily.
+The platform centralizes clubs, sports activities, and community interactions into a single application, helping students discover events, connect with communities, and stay informed about campus life.
 
 ---
 
-### Use Cases
+# Live Demo
 
-- **UC-1 [Show all Activities]**: Users can view all available activities.
-- **UC-2 [Show Activity Details]**: Users can open a specific activity and see detailed information.
-- **UC-3 [Search and Filter Activities]**: Users can search and filter activities by category, date, club, or location.
-- **UC-4 [Favorite Club / Activity]**: Users can mark clubs and activities as favorites.
-- **UC-5 [Join / Leave Activity]**: Users can register or unregister for an activity.
-- **UC-6 [Manage Community Content]**: Users can create, edit, and delete community posts.
-- **UC-7 [Post Announcement]**: Clubs can publish announcements related to their activities.
+### Frontend (Budibase)
 
----
+https://inttech.budibase.app/app/brugg_2_fhnw_connect/brugg2fhnwconnect
 
-## Part 2: Design
+### Backend API (Render)
 
-### Design Overview
-The design of FHNWConnect focuses on a clean, modern, and user-friendly interface suitable for a university environment.
+https://fhnw-connect-project.onrender.com
 
-A color scheme based on yellow, white, and light gray ensures visual consistency. Typography is simple and readable to improve accessibility.
+### GitHub Repository
 
-The layout supports:
-- **List view** for browsing activities efficiently  
-- **Calendar view** for time-based navigation  
-
-The user experience is optimized to allow students to discover activities quickly with minimal interaction.
+https://github.com/shayyshan/FHNW_Connect_project
 
 ---
 
-### Wireframe
+# Project Overview
 
-The wireframe defines the main structure of the application.
+FHNW Connect provides a centralized platform where students can:
 
-The interface is organized with a sidebar on the left, which serves as the main navigation:
-- Home  
-- Clubs  
-- Sports  
-- Community  
+- Discover upcoming campus activities
+- Explore student clubs
+- Browse sports events
+- Mark clubs as favorites
+- View personalized content
+- Participate in community discussions
+- Create community posts
+- Access activity information through calendar views
 
-On the Home page:
-- Calendar overview  
-- Upcoming Activities  
-- Favorite Clubs and Activities  
-
-At the top:
-- Search bar  
-- Help, Login, and Sign Up  
+The goal of the project is to improve student engagement and create a single point of access for campus activities and information.
 
 ---
 
-### Prototype
+# User Stories
 
-The prototype demonstrates the visual design and interaction flow of the application.
+## Students
 
-#### 🏠 Home Dashboard
-<img src="images/FHNW%20Connect_Home.png" width="700">
-
-*Figure 1: Home dashboard with calendar and personalized content*
-
-#### 🏫 Clubs Page
-<img src="images/FHNW%20Connect_Clubs.png" width="700">
-
-*Figure 2: Clubs overview with favorite functionality and activity sidebar*
-
-#### 🏅 Sports Page
-<img src="images/FHNW%20Connect_Sports.png" width="700">
-
-*Figure 3: Weekly sports planner with join/leave functionality*
-
-#### 💬 Community Page
-<img src="images/FHNW%20Connect_Community.png" width="700">
-
-*Figure 4: Community forum with posts, filters, and interactions*
+- As a Student, I want to view upcoming campus activities so that I know what is happening at FHNW.
+- As a Student, I want to browse clubs so that I can find communities that match my interests.
+- As a Student, I want to mark clubs as favorites so that I can quickly access them later.
+- As a Student, I want to browse sports activities through a calendar interface.
+- As a Student, I want to view detailed information about sports activities.
+- As a Student, I want to browse community discussions.
+- As a Student, I want to create community posts.
+- As a User, I want an intuitive interface so that I can easily navigate the platform.
 
 ---
 
-### Domain Design
+# Use Cases
 
-Main entities:
-- User  
-- Club  
-- Activity  
-- Community_Post  
-- User_Activity  
-- User_Favorite_Club  
-- User_Favorite_Activity  
-
-#### Entity Relationship Diagram (ERD)
-<img src="images/Domain%20Model_FHNW%20Connect.png" width="800">
-
----
-
-### Relationships
-
-- A User can join multiple Activities via **User_Activity**  
-- A User can favorite multiple Clubs and Activities  
-- A User can create multiple Community Posts  
-- A Club can organize multiple Activities  
-- An Activity belongs to one Club  
-- A Community Post is created by a User and may belong to a Club  
-
-The **User_Activity** entity acts as a junction table between User and Activity and stores participation details such as status and timestamp.
+| ID | Use Case |
+|------|------|
+| UC-1 | View Home Dashboard |
+| UC-2 | Browse Clubs |
+| UC-3 | Favorite Club |
+| UC-4 | View Sports Calendar |
+| UC-5 | View Sports Activity Details |
+| UC-6 | Browse Community Posts |
+| UC-7 | Create Community Post |
+| UC-8 | View Personalized Content |
 
 ---
 
-### Business Logic
+# Design Overview
 
-The business logic manages interactions between users, activities, and community features:
+The application follows a clean and modern design inspired by FHNW branding.
 
-- Users can join or leave activities  
-- Each user can only have one participation per activity  
-- Favorites personalize the Home Dashboard  
-- Users can create and manage community posts  
-- Clubs can create activities and announcements  
+## Design Principles
+
+- Simple navigation
+- Consistent visual appearance
+- Calendar-based activity planning
+- Card-based content presentation
+- Responsive layout
+- User-friendly interaction patterns
+
+## Color Palette
+
+- FHNW Yellow
+- White
+- Light Gray
+- Black
 
 ---
 
-### Example API
+# Application Structure
 
-**Path:** `/api/activities/{activityId}/join`  
-**Method:** POST  
+The application consists of four major modules.
 
-**Request Body Example:**
-```json
-{
-  "userId": 12,
-  "status": "joined"
-}
+## Home
+
+The Home Dashboard provides:
+
+- Monthly calendar overview
+- Upcoming activities
+- Favorite clubs
+- Favorite sports
+- Personalized content
+
+## Clubs
+
+The Clubs section allows users to:
+
+- Browse clubs
+- View club information
+- Mark clubs as favorites
+- View announcements
+- Discover upcoming activities
+
+## Sports
+
+The Sports module provides:
+
+- Weekly calendar view
+- Monthly calendar view
+- Daily calendar view
+- Agenda view
+- Activity details
+
+## Community
+
+The Community module provides:
+
+- Community forum
+- Community post creation
+- Categorized discussions
+- Student interaction platform
+
+---
+
+# Screenshots
+
+## Home Dashboard
+
+<img src="images/FHNW Connect_Home.png" width="1000">
+
+### Features
+
+- Calendar overview
+- Upcoming activities
+- Favorite clubs
+- Favorite sports
+
+*Figure 1: Home Dashboard*
+
+---
+
+## Clubs Module
+
+<img src="images/FHNW Connect_Clubs.png" width="1000">
+
+### Features
+
+- Club overview cards
+- Favorite club functionality
+- Upcoming activities section
+- Announcements section
+
+*Figure 2: Clubs Page*
+
+---
+
+## Sports Module – Calendar View
+
+<img src="images/FHNW Connect_Sports_1.png" width="1000">
+
+### Features
+
+- Weekly calendar
+- Activity scheduling
+- Calendar navigation
+- Multiple calendar views
+
+*Figure 3: Sports Calendar*
+
+---
+
+## Sports Module – Activity Details
+
+<img src="images/FHNW Connect_Sports_2.png" width="700">
+
+### Features
+
+- Activity description
+- Location information
+- Date and time display
+- Activity image
+
+*Figure 4: Sports Activity Details Modal*
+
+---
+
+## Community Module
+
+<img src="images/FHNW Connect_Community_1.png" width="1000">
+
+### Features
+
+- Community discussions
+- Categorized posts
+- Forum overview
+
+*Figure 5: Community Forum*
+
+---
+
+## Community Post Creation
+
+<img src="images/FHNW Connect_Community_2.png" width="700">
+
+### Features
+
+- Create post dialog
+- Title field
+- Description field
+- Category field
+- Keyword field
+
+*Figure 6: Community Post Creation Modal*
+
+---
+
+# Domain-Driven Design
+
+The project follows Domain-Driven Design (DDD) principles and separates the business logic into bounded contexts.
+
+## Domain Model
+
+<img src="images/Domain Model_FHNW Connect.png" width="1100">
+
+*Figure 7: FHNW Connect Domain Model*
+
+---
+
+# Bounded Contexts
+
+## Activity Participation (Core Domain)
+
+Responsible for:
+
+- Activities
+- Sports activities
+- User participation
+- Favorite activities
+
+### Entities
+
+- Activity
+- Sport
+- User_Activity
+- User_Favorite_Activity
+
+---
+
+## Club Management (Supporting Domain)
+
+Responsible for:
+
+- Club administration
+- Club information
+- Favorite clubs
+
+### Entities
+
+- Club
+- User_Favorite_Club
+
+---
+
+## Community Content (Supporting Domain)
+
+Responsible for:
+
+- Community discussions
+- Community posts
+
+### Entities
+
+- Community_Post
+
+---
+
+## User Management (Generic Domain)
+
+Responsible for:
+
+- User accounts
+- User information
+
+### Entities
+
+- User
+
+---
+
+# Relationships
+
+- A Club can organize multiple Activities.
+- Activities belong to a Club.
+- Users can register for Activities through User_Activity.
+- Users can mark Clubs as favorites.
+- Users can mark Activities and Sports as favorites.
+- Users can create Community Posts.
+- Community Posts may be associated with a Club.
+- Sports activities are managed independently within the Activity Participation domain.
+
+---
+
+# Business Logic
+
+## Club Management
+
+- Browse clubs
+- View club information
+- Mark clubs as favorites
+- Display favorite clubs on the dashboard
+
+## Sports Activities
+
+- Display activities in calendar views
+- View activity details
+- Manage schedules and event information
+
+## Community Features
+
+- Browse community posts
+- Create new community posts
+- Organize posts using categories
+
+## Personalization
+
+- Favorite clubs displayed on dashboard
+- Favorite sports displayed on dashboard
+- Upcoming activities highlighted on the home page
+
+---
+
+# System Architecture
+
+```text
+Budibase Frontend
+        │
+        ▼
+FastAPI Backend (Render)
+        │
+        ▼
+SQLAlchemy ORM
+        │
+        ▼
+PostgreSQL Database (Render)
+```
+
+The frontend communicates with the backend through REST APIs. The FastAPI backend processes requests, handles business logic, and persists data in PostgreSQL using SQLAlchemy.
+
+---
+
+# Technologies Used
+
+## Frontend
+
+- Budibase
+- JavaScript
+- Responsive Web Design
+
+## Backend
+
+- Python
+- FastAPI
+- Uvicorn
+- SQLAlchemy
+- Pydantic
+
+## Database
+
+- PostgreSQL
+
+## Database Migration
+
+- Alembic
+
+## Deployment
+
+- Render
+- Budibase Cloud
+
+## Version Control
+
+- GitHub
+
+## Design & Modeling
+
+- Domain-Driven Design (DDD)
+- Entity Relationship Modeling (ERD)
+- Bounded Context Design
+
+---
+
+# Deployment
+
+## Frontend
+
+Hosted on Budibase Cloud:
+
+https://inttech.budibase.app/app/brugg_2_fhnw_connect/brugg2fhnwconnect
+
+## Backend
+
+Hosted on Render:
+
+https://fhnw-connect-project.onrender.com
+
+## Database
+
+PostgreSQL database hosted on Render.
+
+Database credentials are managed through environment variables and are not included in the repository.
+
+---
+
+# Local Development Setup
+
+## Prerequisites
+
+- Python 3.11+
+- PostgreSQL
+- Git
+
+## Clone Repository
+
+```bash
+git clone https://github.com/shayyshan/FHNW_Connect_project.git
+cd FHNW_Connect_project
+```
+
+## Create Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+### Windows
+
+```bash
+venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+source venv/bin/activate
+```
+
+## Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## Run the Application
+
+```bash
+uvicorn app.main:app --reload
+```
+
+## API Documentation
+
+FastAPI automatically generates API documentation:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+# Authors
+
+### Shannon Polak
+
+FHNW Brugg – Internet Technology Project
+
+GitHub:
+https://github.com/shayyshan
+
+---
+
+# Final Result
+
+FHNW Connect successfully integrates:
+
+✅ Home Dashboard
+
+✅ Club Management
+
+✅ Favorite Clubs
+
+✅ Sports Calendar
+
+✅ Sports Activity Details
+
+✅ Community Forum
+
+✅ Community Post Creation
+
+✅ Personalized Content
+
+✅ PostgreSQL Integration
+
+✅ FastAPI Backend
+
+✅ Budibase Frontend
+
+✅ Cloud Deployment
+
+✅ Domain-Driven Design Architecture
+
+The project demonstrates the complete software development lifecycle, from requirements analysis and domain modeling to the implementation and deployment of a functional campus engagement platform for FHNW students.
