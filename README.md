@@ -148,6 +148,8 @@ The Community module provides:
 
 <img src="images/FHNW Connect_Home.png" width="1000">
 
+<img src="images/FHNW Connect_Home_2.png" width="1000">
+
 ### Features
 
 - Calendar overview
