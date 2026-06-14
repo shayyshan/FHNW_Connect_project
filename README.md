@@ -14,6 +14,10 @@ The platform centralizes clubs, sports activities, and community interactions in
 
 # Live Demo
 
+### Website Demo
+
+https://1drv.ms/v/c/5fdfb5bb8ec24fe9/IQADctJMB8s6QJPLpdE5LYB2AWicw8wOZRbg8tlFbnX6Sn0?e=LU1Ofv
+
 ### Frontend (Budibase)
 
 https://inttech.budibase.app/app/brugg_2_fhnw_connect/brugg2fhnwconnect
