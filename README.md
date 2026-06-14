@@ -1,3 +1,5 @@
+Created by: Shannon Polak, Katrin Schütte, Jorge Mera and Alondra Maria Diaz Navarro
+
 # FHNW Connect
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
